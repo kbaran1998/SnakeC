@@ -1,0 +1,2 @@
+# SnakeC
+Terminal snake game
