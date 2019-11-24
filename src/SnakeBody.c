@@ -1,11 +1,12 @@
 #include "SnakeBody.h"
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 
 typedef struct element {
-    unsigned int x_pos;
-    unsigned int y_pos;
+    int x_pos;
+    int y_pos;
     Direction block_direction;
     BodyBlock * previous_block;
     BodyBlock * next_block;
@@ -71,22 +72,102 @@ void enlargeSnake(SnakeBody * body) {
         case NORTH:
             newTailBlock->block_direction = NORTH;
             newTailBlock->x_pos = oldTailBlock->x_pos;
-            newTailBlock->y_pos = oldTailBlock->y_pos -1;
+            newTailBlock->y_pos = oldTailBlock->y_pos +1;
             break;
         case SOUTH:
             newTailBlock->block_direction = SOUTH;
             newTailBlock->x_pos = oldTailBlock->x_pos;
-            newTailBlock->y_pos = oldTailBlock->y_pos +1;
+            newTailBlock->y_pos = oldTailBlock->y_pos -1;
             break;
     }
     body->tail = newTailBlock;
+    body->body_length = body->body_length +1;
 }
 
+unsigned int size(SnakeBody * body) {
+    return body->body_length;
+}
 
 void update(SnakeBody * body) {
-
+    BodyBlock * currentBlock = body->head;
+    updateCoordsDirection(currentBlock);
+    BodyBlock * next = currentBlock->next_block;
+    while(next != NULL) {
+        if (currentBlock->block_direction == next->block_direction) {
+            updateCoordsDirection(next);
+            currentBlock = next;
+            next = next->next_block;
+        }
+        else {
+            next->block_direction = currentBlock->block_direction;
+            updateCoordsDirection(next);
+            next = next->next_block;
+            updateCoordsDirection(next);
+            if (next != NULL) {
+                currentBlock = next;
+                next = next->next_block;
+            }
+        }
+    }
 }
 
+void updateCoordsDirection(BodyBlock * block) {
+    if (block != NULL) {
+        switch(block->block_direction) {
+            case WEST:
+                block->x_pos = block->x_pos +1;
+                break;
+            case EAST:
+                block->x_pos = block->x_pos -1;
+                break;
+            case NORTH:
+                block->y_pos = block->y_pos -1;
+                break;
+            case SOUTH:
+                block->y_pos = block->y_pos +1;
+                break;
+        }
+    }
+}
+
+int isSnake(SnakeBody * body, int x, int y) {
+    BodyBlock * currentBlock = body->head;
+    while(currentBlock != NULL) {
+        if (currentBlock->x_pos == x && currentBlock->y_pos == y) {
+            return 1;
+        }
+        currentBlock = currentBlock->next_block;
+    }
+    return 0;
+}
+
+void printSnake(SnakeBody * body) {
+    BodyBlock * currentBlock = body->head;
+    char * dir;
+    while(currentBlock != NULL) {
+        switch(currentBlock->block_direction) {
+        case WEST:
+                dir = "WEST";
+                break;
+            case EAST:
+                dir = "EAST";
+                break;
+            case NORTH:
+                dir = "NORTH";
+                break;
+            case SOUTH:
+                dir = "SOUTH";
+                break;
+        }
+        if (currentBlock->next_block != NULL) {
+            printf("(%d, %d, %s) -> ", currentBlock->x_pos, currentBlock->y_pos, dir);
+        }
+        else{
+            printf("(%d, %d, %s)\n", currentBlock->x_pos, currentBlock->y_pos, dir);
+        }
+        currentBlock = currentBlock->next_block;
+    }
+}
 
 void destroySnake(SnakeBody * body) {
     BodyBlock * current_body_block = body->head;

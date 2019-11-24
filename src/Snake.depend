@@ -1,13 +1,15 @@
 # depslib dependency file v1.0
-1574620403 source:/home/kbaran/Documents/Snake/SnakeC/src/main.c
+1574628879 source:/home/kbaran/Documents/Snake/SnakeC/src/main.c
 	<stdio.h>
 	<stdlib.h>
+	<string.h>
 	"SnakeBody.h"
 
-1574619227 /home/kbaran/Documents/Snake/SnakeC/src/SnakeBody.h
+1574628507 /home/kbaran/Documents/Snake/SnakeC/src/SnakeBody.h
 
-1574620214 source:/home/kbaran/Documents/Snake/SnakeC/src/SnakeBody.c
+1574628964 source:/home/kbaran/Documents/Snake/SnakeC/src/SnakeBody.c
 	"SnakeBody.h"
 	<assert.h>
 	<stdlib.h>
+	<stdio.h>
 
